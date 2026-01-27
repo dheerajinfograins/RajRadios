@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export default function Cart() {
+export default function Card() {
   // Example cart data (replace later with dynamic state or context)
   const [cartItems, setCartItems] = useState([
     {
@@ -43,7 +43,7 @@ export default function Cart() {
       {/* Page Header */}
       <section className="text-center mb-12">
         <h1 className="text-5xl font-extrabold mb-4">
-          Your <span className="text-cyan-400">Cart</span>
+          Your <span className="text-cyan-400">Card</span>
         </h1>
         <p className="text-gray-400 text-lg">
           Review your selected products before checkout.

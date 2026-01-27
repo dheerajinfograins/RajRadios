@@ -1,14 +1,25 @@
 import { Navigate, Outlet } from "react-router";
+import { useSelector } from "react-redux";
+import Header from "../components/Header";
+import Footer from "../components/Footer";
 
-export default function PrivateRoute({ children }) {
-  const isAuthenticated = !!localStorage.getItem("authToken");
-  // Replace with Redux / Context if needed
+const ProtectedRoute = () => {
+  // ✅ Get auth state from redux
+  const { isAuthorized } = useSelector((state) => state.auth);
 
-  return (<>isAuthenticated ? children : <Navigate to="/login" replace />
-    
-    <Outlet />
-    
-  </>
+  // 🔐 If user is NOT logged in → redirect to login
+  if (!isAuthorized) {
+    return <Navigate to="/login" replace />;
+  }
 
-  )
-}
+  // ✅ If logged in → show protected layout
+  return (
+    <>
+      <Header />
+      <Outlet />   {/* Protected pages render here */}
+      <Footer />
+    </>
+  );
+};
+
+export default ProtectedRoute;

@@ -1,12 +1,31 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  createRepair,
+  resetRepairState,
+} from "../feactures/repair/repairServiceSlice.js";
+import { useNavigate } from "react-router";
 
 export default function RepairService() {
+  const dispatch = useDispatch();
+  const { loading, error, success } = useSelector((state) => state.repair);
+
+  const navigate = useNavigate();
+  const { token } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (!token) {
+      navigate("/login");
+    }
+  }, [token, navigate]);
+
+
   const [formData, setFormData] = useState({
-    name: "",
-    phone: "",
+    user_name: "",
+    mobile: "",
     email: "",
-    productType: "",
-    issue: "",
+    product_type: "",
+    describation: "",
   });
 
   const handleChange = (e) =>
@@ -14,131 +33,131 @@ export default function RepairService() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert("🔧 Your repair request has been submitted!");
+
+    dispatch(createRepair(formData));
   };
 
+  useEffect(() => {
+    if (success) {
+      setFormData({
+        user_name: "",
+        mobile: "",
+        email: "",
+        product_type: "",
+        describation: "",
+      });
+
+      setTimeout(() => dispatch(resetRepairState()), 3000);
+    }
+  }, [success, dispatch]);
+
   const services = [
-    {
-      title: "Radio Repair",
-      desc: "We fix all kinds of analog, digital, and vintage radios with expert precision.",
-      icon: "📻",
-    },
-    {
-      title: "Speaker Repair",
-      desc: "Restore your sound clarity — we repair speakers, tweeters, and woofers.",
-      icon: "🔊",
-    },
-    {
-      title: "Amplifier Service",
-      desc: "Professional amplifier tuning, rewiring, and component replacements.",
-      icon: "🎚️",
-    },
-    {
-      title: "Bluetooth Device Fix",
-      desc: "Connectivity, battery, or circuit issues — we handle all Bluetooth devices.",
-      icon: "📶",
-    },
-    {
-      title: "Home Audio Systems",
-      desc: "Complete repair and setup for multi-speaker home and studio audio systems.",
-      icon: "🏠",
-    },
-    {
-      title: "Vintage Equipment",
-      desc: "We carefully restore old radios and antique audio devices to working condition.",
-      icon: "🕰️",
-    },
+    { title: "Radio Repair", icon: "📻" },
+    { title: "Speaker Repair", icon: "🔊" },
+    { title: "Amplifier Service", icon: "🎚️" },
+    { title: "Bluetooth Device Fix", icon: "📶" },
+    { title: "Home Audio Systems", icon: "🏠" },
+    { title: "Vintage Equipment", icon: "🕰️" },
   ];
 
   return (
     <div className="bg-gradient-to-r from-black via-gray-900 to-gray-800 text-white min-h-screen py-16 px-6 md:px-20">
+
       {/* Header */}
       <section className="text-center mb-16">
         <h1 className="text-5xl font-extrabold mb-4">
           Repair <span className="text-cyan-400">Services</span>
         </h1>
-        <p className="text-gray-400 text-lg max-w-3xl mx-auto">
-          At Vijay Radios, we specialize in bringing your radios, speakers, and
-          sound systems back to life with expert repair and maintenance.
+        <p className="text-gray-400 max-w-3xl mx-auto">
+          We specialize in professional audio repair and restoration.
         </p>
       </section>
 
-      {/* Services Grid */}
+      {/* Services */}
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8 mb-20">
-        {services.map((service, index) => (
+        {services.map((s, i) => (
           <div
-            key={index}
-            className="bg-gray-900 border border-gray-800 rounded-2xl p-6 text-center shadow-xl hover:shadow-cyan-500/20 transition duration-300"
+            key={i}
+            className="bg-gray-900 border border-gray-800 rounded-2xl p-6 text-center"
           >
-            <div className="text-5xl mb-4">{service.icon}</div>
-            <h2 className="text-xl font-semibold mb-2 text-cyan-400">
-              {service.title}
+            <div className="text-5xl mb-4">{s.icon}</div>
+            <h2 className="text-xl font-semibold text-cyan-400">
+              {s.title}
             </h2>
-            <p className="text-gray-400 text-sm">{service.desc}</p>
           </div>
         ))}
       </div>
 
-      {/* Repair Request Form */}
-      <section className="bg-gray-900 border border-gray-800 rounded-2xl shadow-xl p-8 max-w-3xl mx-auto">
+      {/* Repair Form */}
+      <section className="bg-gray-900 border border-gray-800 rounded-2xl p-8 max-w-3xl mx-auto">
         <h2 className="text-3xl font-bold mb-6 text-center text-cyan-400">
           Request a Repair
         </h2>
+
         <form onSubmit={handleSubmit} className="space-y-5">
-          <div className="grid md:grid-cols-2 gap-5">
-            <input
-              type="text"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="Full Name"
-              required
-              className="bg-gray-800 p-3 rounded-lg border border-gray-700 focus:border-cyan-400 focus:outline-none"
-            />
-            <input
-              type="text"
-              name="phone"
-              value={formData.phone}
-              onChange={handleChange}
-              placeholder="Phone Number"
-              required
-              className="bg-gray-800 p-3 rounded-lg border border-gray-700 focus:border-cyan-400 focus:outline-none"
-            />
-          </div>
           <input
-            type="email"
+            name="user_name"
+            value={formData.user_name}
+            onChange={handleChange}
+            placeholder="Full Name"
+            required
+            className="w-full bg-gray-800 p-3 rounded-lg"
+          />
+
+          <input
+            name="mobile"
+            value={formData.mobile}
+            onChange={handleChange}
+            placeholder="Mobile Number"
+            required
+            className="w-full bg-gray-800 p-3 rounded-lg"
+          />
+
+          <input
             name="email"
+            type="email"
             value={formData.email}
             onChange={handleChange}
             placeholder="Email Address"
             required
-            className="w-full bg-gray-800 p-3 rounded-lg border border-gray-700 focus:border-cyan-400 focus:outline-none"
+            className="w-full bg-gray-800 p-3 rounded-lg"
           />
+
           <input
-            type="text"
-            name="productType"
-            value={formData.productType}
+            name="product_type"
+            value={formData.product_type}
             onChange={handleChange}
-            placeholder="Product Type (e.g. Radio, Speaker, Amplifier)"
+            placeholder="Product Type (Radio, Speaker, etc.)"
             required
-            className="w-full bg-gray-800 p-3 rounded-lg border border-gray-700 focus:border-cyan-400 focus:outline-none"
+            className="w-full bg-gray-800 p-3 rounded-lg"
           />
+
           <textarea
-            name="issue"
-            value={formData.issue}
+            name="describation"
+            value={formData.describation}
             onChange={handleChange}
             placeholder="Describe the issue"
             rows="4"
-            required
-            className="w-full bg-gray-800 p-3 rounded-lg border border-gray-700 focus:border-cyan-400 focus:outline-none"
-          ></textarea>
+            className="w-full bg-gray-800 p-3 rounded-lg"
+          />
 
           <button
             type="submit"
-            className="w-full bg-cyan-500 hover:bg-cyan-400 text-black font-semibold py-3 rounded-full shadow-lg transition duration-300"
+            disabled={loading}
+            className="w-full bg-cyan-500 hover:bg-cyan-400 text-black py-3 rounded-full"
           >
-            Submit Request
+            {loading ? "Submitting..." : "Submit Request"}
           </button>
+
+          {success && (
+            <p className="text-green-400 text-center">
+              Repair request submitted successfully ✅
+            </p>
+          )}
+
+          {error && (
+            <p className="text-red-500 text-center">{error}</p>
+          )}
         </form>
       </section>
     </div>

@@ -49,13 +49,13 @@ export default function Footer() {
           <h3 className="text-xl font-semibold text-white mb-3">Contact Us</h3>
           <ul className="space-y-2">
             <li>
-              📍 <span className="text-gray-400">Shichai Vibhag Colony ke Smane A.B Road Kanasiya Naka</span>
+              📍 <span className="text-gray-400">Shichai Vibhag Colony ke Smane A.B Road Kanasiya Naka (Maksi)</span>
             </li>
             <li>
-              📞 <a href="tel:+919876543210" className="hover:text-cyan-400">+91 8871442941 - 9754990102</a>
+              📞 <a href="#" className="hover:text-cyan-400">+91 8871442941 - 9754990102</a>
             </li>
             <li>
-              ✉️ <a href="mailto:info@vijayradios.com" className="hover:text-cyan-400">
+              ✉️ <a href="#" className="hover:text-cyan-400">
                 vijayranasara990@gmail.com
               </a>
             </li>

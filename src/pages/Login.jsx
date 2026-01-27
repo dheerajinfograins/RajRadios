@@ -1,86 +1,110 @@
-import React, { useState } from "react";
-import { Link } from "react-router";
+import { useEffect } from "react";
+import { Link, useNavigate } from "react-router"; // ✅ already correct
+import { useDispatch, useSelector } from "react-redux";
+import { loginUser } from "../feactures/auth/authSlice.js";
 
-// Login Page Component
-export function Login() {
+// ✅ NEW IMPORTS
+// import axiosInstance from "../utils/axiosInstance.js";
+import { isAuthenticated } from "../utils/auth.utils";
+
+// Login User Component
+export default function Login() {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  // ✅ Keeping your redux state exactly same
+  const { loading, error, isAuthorized } = useSelector(
+    (state) => state.auth
+  );
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+
+    const login_user = e.target.login_user.value.trim();
+    const password = e.target.password.value.trim();
+
+    if (!login_user || !password) return;
+
+    // ✅ Redux thunk handles API + token saving
+    dispatch(
+      loginUser({
+        login_user,
+        password,
+      })
+    );
+  };
+
+  // // 🔐 AUTO REDIRECT AFTER LOGIN
+  // useEffect(() => {
+  //   /**
+  //    * ✅ Redirect user only when login is successful
+  //    */
+  //   if (isAuthorized === true) {
+  //     navigate("/", { replace: true });
+  //   }
+  // }, [isAuthorized, navigate]);
+
+  // 🔒 EXTRA SAFETY:
+  // If user already logged in, prevent login page access
+  useEffect(() => {
+    if (isAuthenticated()) {
+      navigate("/", { replace: true });
+    }
+  }, [navigate]);
+
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#0A0F14] text-white p-4">
       <div className="w-full max-w-md bg-[#121821] p-8 rounded-2xl shadow-xl">
         <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
 
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={submitHandler}>
+          
+          {/* Email or Mobile */}
           <div>
-            <label className="block mb-1 text-sm">Email</label>
-            <input
-              type="email"
-              className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none"
-              placeholder="Enter your email"
-            />
-          </div>
-
-          <div>
-            <label className="block mb-1 text-sm">Password</label>
-            <input
-              type="password"
-              className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none"
-              placeholder="Enter your password"
-            />
-          </div>
-
-          <button className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded text-white font-semibold transition">
-            Login
-          </button>
-
-          <p className="text-center text-gray-400 mt-4">
-            Don't have an account? <Link to="/signup" className="text-blue-400">Sign Up</Link>
-          </p>
-        </form>
-      </div>
-    </div>
-  );
-}
-
-// Sign Up Page Component
-export function SignUp() {
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0A0F14] text-white p-4">
-      <div className="w-full max-w-md bg-[#121821] p-8 rounded-2xl shadow-xl">
-        <h2 className="text-3xl font-bold text-center mb-6">Sign Up</h2>
-
-        <form className="space-y-4">
-          <div>
-            <label className="block mb-1 text-sm">Full Name</label>
+            <label className="block mb-1 text-sm">Email or Mobile</label>
             <input
               type="text"
-              className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none"
-              placeholder="Enter your full name"
+              name="login_user"
+              className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none focus:border-blue-500"
+              placeholder="Enter email or mobile"
+              required
             />
           </div>
 
-          <div>
-            <label className="block mb-1 text-sm">Email</label>
-            <input
-              type="email"
-              className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none"
-              placeholder="Enter your email"
-            />
-          </div>
-
+          {/* Password */}
           <div>
             <label className="block mb-1 text-sm">Password</label>
             <input
               type="password"
-              className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none"
+              name="password"
+              className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none focus:border-blue-500"
               placeholder="Enter your password"
+              required
             />
           </div>
 
-          <button className="w-full bg-green-600 hover:bg-green-700 p-3 rounded text-white font-semibold transition">
-            Create Account
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 hover:bg-blue-700 p-3 rounded text-white font-semibold disabled:opacity-60"
+          >
+            {loading ? "Logging in..." : "Login"}
           </button>
 
+          {/* ❌ Error Message */}
+          {error && (
+            <p className="text-red-500 text-sm text-center mt-2">
+              {error}
+            </p>
+          )}
+
+          {/* Redirect */}
           <p className="text-center text-gray-400 mt-4">
-            Already have an account? <Link to="/login" className="text-blue-400">Login</Link>
+            Don't have an account?{" "}
+            <Link to="/signup" className="text-blue-400 hover:underline">
+              Sign Up
+            </Link>
           </p>
         </form>
       </div>

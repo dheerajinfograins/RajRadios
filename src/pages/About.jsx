@@ -17,7 +17,7 @@ export default function About() {
         <div>
           <h2 className="text-3xl font-semibold mb-4 text-cyan-400">Our Story</h2>
           <p className="text-gray-300 leading-relaxed">
-            Founded in 1990, <span className="text-cyan-400 font-semibold">Vijay Radios</span> started as a small repair shop dedicated to restoring vintage radios.  
+            Founded in 2015, <span className="text-cyan-400 font-semibold">Vijay Radios</span> started as a small repair shop dedicated to restoring vintage radios.  
             Over the years, we’ve evolved into a trusted brand offering high-quality radios, modern sound systems, and professional repair services.  
             Our mission is simple — to bring back the soul of music and the nostalgia of sound, powered by modern innovation.
           </p>

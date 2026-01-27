@@ -11,7 +11,7 @@ export default function Header() {
     { name: "Contact", path: "/contact" },
     { name: "Product Details", path: "/productdetails" },
     { name: "Repair Service", path: "/repairservice" },
-    { name: "Cart", path: "/cart" },
+    { name: "Card", path: "/card" },
     { name: "Checkout", path: "/checkout" },
   ];
 
