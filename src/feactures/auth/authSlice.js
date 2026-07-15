@@ -3,8 +3,12 @@ import axiosInstance from "../../utils/axiosInstance.js"; // ✅ USE AXIOS INSTA
 
 const API_URL = "/auth"; // ✅ baseURL already set in axiosInstance
 
-// 🔹 Get token safely (SINGLE SOURCE OF TRUTH)
+// 🔹 Get token and user safely (SINGLE SOURCE OF TRUTH)
 const getToken = () => localStorage.getItem("vijayToken");
+const getUser = () => {
+  const user = localStorage.getItem("vijayUser");
+  return user ? JSON.parse(user) : null;
+};
 
 // ================= REGISTER =================
 export const registerUser = createAsyncThunk(
@@ -40,7 +44,7 @@ const authSlice = createSlice({
   name: "auth",
 
   initialState: {
-    user: null,
+    user: getUser(),
     token: getToken(),                 // ✅ sync from localStorage
     isAuthorized: Boolean(getToken()), // ✅ instant auth check
     loading: false,
@@ -54,6 +58,11 @@ const authSlice = createSlice({
       state.isAuthorized = false;
 
       localStorage.removeItem("vijayToken"); // ✅ clear token
+      localStorage.removeItem("vijayUser"); // ✅ clear user data
+    },
+    updateProfile: (state, action) => {
+      state.user = { ...state.user, ...action.payload };
+      localStorage.setItem("vijayUser", JSON.stringify(state.user));
     },
   },
 
@@ -89,8 +98,11 @@ const authSlice = createSlice({
         state.token = action.payload.token;
         state.isAuthorized = true;
 
-        // ✅ Persist token
+        // ✅ Persist token and user
         localStorage.setItem("vijayToken", action.payload.token);
+        if (action.payload.user) {
+          localStorage.setItem("vijayUser", JSON.stringify(action.payload.user));
+        }
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.loading = false;
@@ -99,5 +111,5 @@ const authSlice = createSlice({
   },
 });
 
-export const { logout } = authSlice.actions;
+export const { logout, updateProfile } = authSlice.actions;
 export default authSlice.reducer;

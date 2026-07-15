@@ -13,7 +13,7 @@ export default function Login() {
   const navigate = useNavigate();
 
   // ✅ Keeping your redux state exactly same
-  const { loading, error, isAuthorized } = useSelector(
+  const { loading, error } = useSelector(
     (state) => state.auth
   );
 
@@ -61,8 +61,9 @@ export default function Login() {
           
           {/* Email or Mobile */}
           <div>
-            <label className="block mb-1 text-sm">Email or Mobile</label>
+            <label htmlFor="login_user" className="block mb-1 text-sm">Email or Mobile</label>
             <input
+              id="login_user"
               type="text"
               name="login_user"
               className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none focus:border-blue-500"
@@ -73,8 +74,9 @@ export default function Login() {
 
           {/* Password */}
           <div>
-            <label className="block mb-1 text-sm">Password</label>
+            <label htmlFor="password" className="block mb-1 text-sm">Password</label>
             <input
+              id="password"
               type="password"
               name="password"
               className="w-full p-3 rounded bg-[#1C242F] border border-gray-700 focus:outline-none focus:border-blue-500"

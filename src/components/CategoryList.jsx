@@ -13,9 +13,9 @@ export default function CategoryList() {
       <h2 className="text-2xl font-semibold mb-4">Categories</h2>
 
       <ul className="space-y-2">
-        {categories.map((cat, index) => (
+        {categories.map((cat) => (
           <li
-            key={index}
+            key={cat}
             className="p-3 bg-gray-800 rounded hover:bg-gray-700 cursor-pointer transition"
           >
             {cat}
