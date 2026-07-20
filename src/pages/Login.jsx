@@ -12,8 +12,8 @@ export default function Login() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // ✅ Keeping your redux state exactly same
-  const { loading, error } = useSelector(
+  // ✅ Getting user and auth status from redux
+  const { loading, error, isAuthorized, user } = useSelector(
     (state) => state.auth
   );
 
@@ -34,26 +34,35 @@ export default function Login() {
     );
   };
 
-  // // 🔐 AUTO REDIRECT AFTER LOGIN
-  // useEffect(() => {
-  //   /**
-  //    * ✅ Redirect user only when login is successful
-  //    */
-  //   if (isAuthorized === true) {
-  //     navigate("/", { replace: true });
-  //   }
-  // }, [isAuthorized, navigate]);
+  // 🔐 AUTO REDIRECT AFTER LOGIN
+  useEffect(() => {
+    /**
+     * ✅ Redirect user when login is successful based on role
+     */
+    if (isAuthorized && user) {
+      if (user.role === "admin") {
+        navigate("/admin", { replace: true }); // Admin goes to dashboard
+      } else {
+        navigate("/", { replace: true }); // Normal user goes to home
+      }
+    }
+  }, [isAuthorized, user, navigate]);
 
   // 🔒 EXTRA SAFETY:
   // If user already logged in, prevent login page access
   useEffect(() => {
     if (isAuthenticated()) {
-      navigate("/", { replace: true });
+      // If there's a token, check user role from redux state to redirect
+      if (user?.role === "admin") {
+        navigate("/admin", { replace: true });
+      } else {
+        navigate("/", { replace: true });
+      }
     }
-  }, [navigate]);
+  }, [navigate, user]);
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0A0F14] text-white p-4">
+    <div className="min-h-screen flex items-center justify-center bg-[#0A0F14] text-white p-4 pt-32">
       <div className="w-full max-w-md bg-[#121821] p-8 rounded-2xl shadow-xl">
         <h2 className="text-3xl font-bold text-center mb-6">Login</h2>
 

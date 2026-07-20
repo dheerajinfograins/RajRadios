@@ -12,7 +12,7 @@ export default function OrderHistory() {
   const { orders } = useSelector((state) => state.order);
 
   return (
-    <div className="min-h-screen bg-[#0a0f16] text-white py-16 px-6 md:px-12 lg:px-20 relative">
+    <div className="min-h-screen bg-[#0a0f16] text-white pt-36 pb-16 px-6 md:px-12 lg:px-20 relative">
       {/* Background glow effects */}
       <div className="absolute top-[10%] left-[-10%] w-96 h-96 bg-cyan-600 rounded-full mix-blend-screen filter blur-[128px] opacity-20 pointer-events-none"></div>
       

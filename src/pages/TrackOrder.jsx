@@ -29,7 +29,7 @@ export default function TrackOrder() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0a0f16] text-white py-16 px-6 md:px-12 lg:px-20 relative overflow-hidden">
+    <div className="min-h-screen bg-[#0a0f16] text-white pt-36 pb-16 px-6 md:px-12 lg:px-20 relative overflow-hidden">
       {/* Background glow effects */}
       <div className="absolute top-[10%] right-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[128px] opacity-20 pointer-events-none"></div>
 

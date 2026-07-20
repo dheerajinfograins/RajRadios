@@ -5,6 +5,8 @@ import repairReducer from "../feactures/repair/repairServiceSlice.js";
 import cartReducer from "../feactures/cart/cartSlice.js";
 import wishlistReducer from "../feactures/wishlist/wishlistSlice.js";
 import orderReducer from "../feactures/order/orderSlice.js";
+import adminReducer from "../feactures/admin/adminSlice.js";
+import productReducer from "../feactures/product/productSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +16,7 @@ export const store = configureStore({
     cart: cartReducer,
     wishlist: wishlistReducer,
     order: orderReducer,
+    admin: adminReducer,
+    product: productReducer,
   },
 });

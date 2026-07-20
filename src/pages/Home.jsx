@@ -1,7 +1,34 @@
+import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Wrench } from "lucide-react";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../feactures/product/productSlice";
 
 export default function Home() {
+  const dispatch = useDispatch();
+  const { products } = useSelector((state) => state.product);
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  useEffect(() => {
+    dispatch(fetchProducts());
+  }, [dispatch]);
+
+  // Extract latest product images
+  const latestImages = products
+    .filter(p => p.images && p.images.length > 0)
+    .slice(0, 5) // Take top 5 latest products with images
+    .map(p => `http://localhost:5000${p.images[0]}`);
+
+  // Fallback image if no products exist
+  const sliderImages = latestImages.length > 0 ? latestImages : ["images/Speaker1.jpg"];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % sliderImages.length);
+    }, 3000);
+    return () => clearInterval(timer);
+  }, [sliderImages.length]);
+
   return (
     <div className="bg-[#0a0f16] text-white min-h-screen font-sans selection:bg-cyan-500 selection:text-black overflow-hidden relative">
       
@@ -10,7 +37,7 @@ export default function Home() {
       <div className="absolute bottom-[-10%] right-[-10%] w-96 h-96 bg-blue-600 rounded-full mix-blend-screen filter blur-[128px] opacity-20"></div>
 
       {/* Hero Section */}
-      <section className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-20 py-20 lg:py-32 max-w-7xl mx-auto">
+      <section className="relative z-10 flex flex-col-reverse md:flex-row items-center justify-between px-6 md:px-20 pt-36 pb-20 lg:pt-48 lg:pb-32 max-w-7xl mx-auto">
         {/* Text Section */}
         <div className="md:w-1/2 text-center md:text-left mt-12 md:mt-0 space-y-6">
           <h1 className="text-5xl lg:text-7xl font-extrabold leading-tight tracking-tight">
@@ -41,13 +68,34 @@ export default function Home() {
 
         {/* Image Section */}
         <div className="md:w-1/2 flex justify-center relative mt-16 md:mt-0">
-          <div className="relative group">
-            <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-500"></div>
-            <img
-              src="images/Speaker1.jpg"
-              alt="Vintage Radio"
-              className="relative rounded-3xl shadow-2xl w-80 md:w-[450px] object-cover aspect-[4/3] border border-gray-700/50 transform transition duration-500 group-hover:scale-[1.02] bg-gray-900"
-            />
+          <div className="relative group overflow-hidden rounded-3xl shadow-2xl w-80 md:w-[450px] aspect-[4/3] border border-gray-700/50 bg-gray-900">
+            <div className="absolute -inset-4 bg-gradient-to-r from-cyan-500 to-blue-600 rounded-[3rem] blur-2xl opacity-20 group-hover:opacity-40 transition duration-1000 group-hover:duration-500 z-0"></div>
+            
+            {sliderImages.map((imgSrc, index) => (
+              <img
+                key={index}
+                src={imgSrc}
+                alt={`Hero Slide ${index + 1}`}
+                className={`absolute inset-0 w-full h-full object-cover transform transition-all duration-1000 ease-in-out z-10 ${
+                  index === currentSlide ? 'opacity-100 scale-100' : 'opacity-0 scale-105'
+                }`}
+              />
+            ))}
+            
+            {/* Slider Indicators */}
+            {sliderImages.length > 1 && (
+              <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
+                {sliderImages.map((_, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() => setCurrentSlide(idx)}
+                    className={`w-2 h-2 rounded-full transition-all duration-300 ${
+                      idx === currentSlide ? 'bg-cyan-500 w-4' : 'bg-gray-400/50 hover:bg-gray-400'
+                    }`}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </div>
       </section>

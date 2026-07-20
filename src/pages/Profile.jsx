@@ -32,8 +32,11 @@ export default function Profile() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center py-12 px-4 bg-gray-900 text-white">
-      <div className="w-full max-w-lg bg-gray-800 p-8 rounded-2xl shadow-2xl border border-gray-700">
+    <div className="min-h-screen flex flex-col items-center pt-36 pb-16 px-4 bg-[#0a0f16] text-white relative">
+      {/* Background glow effects for consistency */}
+      <div className="absolute top-[-10%] left-[-10%] w-96 h-96 bg-cyan-600 rounded-full mix-blend-screen filter blur-[128px] opacity-20 pointer-events-none"></div>
+      
+      <div className="w-full max-w-lg bg-gray-800/80 backdrop-blur-sm p-8 rounded-3xl shadow-2xl border border-gray-700 relative z-10">
         <h2 className="text-3xl font-bold text-center mb-8 text-cyan-400">My Profile</h2>
 
         <form className="space-y-6" onSubmit={handleSubmit}>

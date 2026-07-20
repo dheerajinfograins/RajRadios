@@ -15,9 +15,16 @@ import Profile from './pages/Profile'
 import OrderHistory from './pages/OrderHistory'
 import TrackOrder from './pages/TrackOrder'
 
+// Admin Imports
+import AdminRoute from './routes/AdminRoute'
+import Dashboard from './pages/admin/Dashboard'
+import ProductsManager from './pages/admin/ProductsManager'
+import OrdersManager from './pages/admin/OrdersManager'
+import UsersManager from './pages/admin/UsersManager'
+import RepairsManager from './pages/admin/RepairsManager'
+import ContactsManager from './pages/admin/ContactsManager'
 
 function App() {
-
 
   return (
     <Routes>
@@ -38,6 +45,16 @@ function App() {
         <Route path="profile" element={<Profile />} />
         <Route path="orders" element={<OrderHistory />} />
         <Route path="track-order" element={<TrackOrder />} />
+      </Route>
+
+      {/* Admin Routes */}
+      <Route path="/admin" element={<AdminRoute />}>
+        <Route index element={<Dashboard />} />
+        <Route path="products" element={<ProductsManager />} />
+        <Route path="orders" element={<OrdersManager />} />
+        <Route path="users" element={<UsersManager />} />
+        <Route path="repairs" element={<RepairsManager />} />
+        <Route path="contacts" element={<ContactsManager />} />
       </Route>
 
     </Routes>

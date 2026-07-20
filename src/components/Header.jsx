@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Home, ShoppingBag, Info, Phone, Wrench, ShoppingCart, LogOut, User, Heart } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../feactures/auth/authSlice";
+import logoImg from '../assets/logo/logo.png';
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -16,24 +17,24 @@ export default function Header() {
   const wishlistCount = wishlistItems.length;
 
   const links = [
-    { name: "Home", path: "/", icon: <Home className="w-4 h-4" /> },
-    { name: "Product", path: "/shop", icon: <ShoppingBag className="w-4 h-4" /> },
-    { name: "About", path: "/about", icon: <Info className="w-4 h-4" /> },
-    { name: "Contact", path: "/contact", icon: <Phone className="w-4 h-4" /> },
-    { name: "Repair Service", path: "/repairservice", icon: <Wrench className="w-4 h-4" /> },
-    { name: "Cart", path: "/card", icon: <ShoppingCart className="w-4 h-4" />, count: cartCount },
-    { name: "Wishlist", path: "/wishlist", icon: <Heart className="w-4 h-4" />, count: wishlistCount },
+    { name: "Home", path: "/", icon: <Home className="w-6 h-6" /> },
+    { name: "Product", path: "/shop", icon: <ShoppingBag className="w-6 h-6" /> },
+    { name: "About", path: "/about", icon: <Info className="w-6 h-6" /> },
+    { name: "Contact", path: "/contact", icon: <Phone className="w-6 h-6" /> },
+    { name: "Repair Service", path: "/repairservice", icon: <Wrench className="w-6 h-6" /> },
+    { name: "Cart", path: "/card", icon: <ShoppingCart className="w-6 h-6" />, count: cartCount },
+    { name: "Wishlist", path: "/wishlist", icon: <Heart className="w-6 h-6" />, count: wishlistCount },
   ];
 
   return (
     <>
-      <header className="bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white shadow-lg sticky top-0 z-50">
-        <div className="container mx-auto flex justify-between items-center px-6 py-4">
+      <header className="bg-black/30 backdrop-blur-md text-white shadow-lg fixed w-full top-0 left-0 z-50">
+        <div className="container mx-auto flex justify-between items-center px-6 py-2">
 
           {/* Logo */}
-          <h1 className="text-2xl font-bold tracking-wide text-cyan-400">
-            Vijay<span className="text-white">Radios</span>
-          </h1>
+          <NavLink to="/" className="flex items-center">
+            <img src={logoImg} alt="Vijay Radios Logo" className="h-25 w-auto scale-110" />
+          </NavLink>
 
           {/* Desktop Navigation */}
           <nav className="space-x-6 hidden md:flex items-center">
@@ -66,11 +67,11 @@ export default function Header() {
             {isAuthorized ? (
               <div className="relative">
                 <button
-                  className="flex items-center gap-2 text-cyan-400 font-semibold cursor-pointer p-2 rounded-lg hover:bg-gray-800 transition"
+                  className="flex items-center gap-2 text-cyan-400 font-semibold cursor-pointer p-2 rounded-lg hover:bg-gray-800/50 transition"
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 >
-                  <User className="w-5 h-5" />
-                  <span>Hi, {user?.user_name || user?.name || "User"}</span>
+                  <User className="w-6 h-6" />
+                  <span className="text-lg">Hi, {user?.user_name || user?.name || "User"}</span>
                 </button>
 
                 {/* Dropdown Menu */}
