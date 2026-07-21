@@ -6,7 +6,7 @@ export const createRepair = createAsyncThunk(
   "repair/create",
   async (repairData, { rejectWithValue }) => {
     try {
-      const res = await axiosInstance.post("http://localhost:5000/repair/create", repairData);
+      const res = await axiosInstance.post("/repair/create", repairData);
       return res.data;
     } catch (error) {
       return rejectWithValue(

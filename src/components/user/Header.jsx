@@ -2,8 +2,9 @@ import { NavLink } from "react-router";
 import { useState } from "react";
 import { Home, ShoppingBag, Info, Phone, Wrench, ShoppingCart, LogOut, User, Heart } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../feactures/auth/authSlice";
-import logoImg from '../assets/logo/logo.png';
+import { logout } from "../../feactures/auth/authSlice";
+import { SERVER_URL } from "../../utils/axiosInstance";
+import logoImg from "../../assets/logo/logo.png";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -70,7 +71,11 @@ export default function Header() {
                   className="flex items-center gap-2 text-cyan-400 font-semibold cursor-pointer p-2 rounded-lg hover:bg-gray-800/50 transition"
                   onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
                 >
-                  <User className="w-6 h-6" />
+                  {user?.photo ? (
+                    <img src={`${SERVER_URL}${user.photo}`} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-cyan-500/30" />
+                  ) : (
+                    <User className="w-6 h-6" />
+                  )}
                   <span className="text-lg">Hi, {user?.user_name || user?.name || "User"}</span>
                 </button>
 
@@ -163,7 +168,11 @@ export default function Header() {
               <>
                 <div className="flex flex-col gap-2 px-4 py-3 border-b border-gray-700">
                   <div className="flex items-center gap-2 text-cyan-400 font-semibold mb-2">
-                    <User className="w-5 h-5" />
+                    {user?.photo ? (
+                      <img src={`${SERVER_URL}${user.photo}`} alt="Profile" className="w-7 h-7 rounded-full object-cover border border-cyan-500/30" />
+                    ) : (
+                      <User className="w-5 h-5" />
+                    )}
                     <span>Hi, {user?.user_name || user?.name || "User"}</span>
                   </div>
                   <NavLink to="/profile" onClick={() => setMobileOpen(false)} className="block text-white hover:text-cyan-400 py-2">Profile</NavLink>

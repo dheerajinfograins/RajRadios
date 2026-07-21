@@ -1,19 +1,13 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import axiosInstance from "../../utils/axiosInstance";
 
 // Base API URL
-const API_URL = "http://localhost:5000/api/products";
-
-// Get token helper
-const getToken = (getState) => {
-  const { auth: { token } } = getState();
-  return token || localStorage.getItem("token");
-};
+const API_URL = "/products";
 
 // Fetch all products
 export const fetchProducts = createAsyncThunk("product/fetchProducts", async (_, thunkAPI) => {
   try {
-    const response = await axios.get(API_URL);
+    const response = await axiosInstance.get(API_URL);
     return response.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -23,14 +17,12 @@ export const fetchProducts = createAsyncThunk("product/fetchProducts", async (_,
 // Create product (with FormData)
 export const createProduct = createAsyncThunk("product/createProduct", async (productData, thunkAPI) => {
   try {
-    const token = getToken(thunkAPI.getState);
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     };
-    const response = await axios.post(API_URL, productData, config);
+    const response = await axiosInstance.post(API_URL, productData, config);
     return response.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -40,14 +32,12 @@ export const createProduct = createAsyncThunk("product/createProduct", async (pr
 // Update product (with FormData)
 export const updateProduct = createAsyncThunk("product/updateProduct", async ({ id, productData }, thunkAPI) => {
   try {
-    const token = getToken(thunkAPI.getState);
     const config = {
       headers: {
-        Authorization: `Bearer ${token}`,
         "Content-Type": "multipart/form-data",
       },
     };
-    const response = await axios.put(`${API_URL}/${id}`, productData, config);
+    const response = await axiosInstance.put(`${API_URL}/${id}`, productData, config);
     return response.data.data;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
@@ -57,13 +47,7 @@ export const updateProduct = createAsyncThunk("product/updateProduct", async ({ 
 // Delete product
 export const deleteProduct = createAsyncThunk("product/deleteProduct", async (id, thunkAPI) => {
   try {
-    const token = getToken(thunkAPI.getState);
-    const config = {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-    await axios.delete(`${API_URL}/${id}`, config);
+    await axiosInstance.delete(`${API_URL}/${id}`);
     return id;
   } catch (error) {
     return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);

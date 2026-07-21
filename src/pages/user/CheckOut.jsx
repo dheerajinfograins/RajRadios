@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router";
-import { clearCart } from "../feactures/cart/cartSlice";
-import { addOrder } from "../feactures/order/orderSlice";
+import { clearCart } from "../../feactures/cart/cartSlice";
+import { createOrder } from "../../feactures/order/orderSlice";
 import { QrCode, CheckCircle } from "lucide-react";
 
 export default function Checkout() {
@@ -37,6 +37,31 @@ export default function Checkout() {
   const handleChange = (e) =>
     setFormData({ ...formData, [e.target.name]: e.target.value });
 
+  const processOrder = () => {
+    const orderPayload = {
+      user_name: formData.name,
+      email: formData.email,
+      mobile: formData.phone,
+      address: formData.address,
+      city: formData.city,
+      state: formData.state,
+      zip: formData.zip,
+      payment: formData.payment,
+      subtotal,
+      shipping,
+      total,
+      items: cartItems.map(item => ({
+        productId: item._id || item.id,
+        name: item.name,
+        price: item.price,
+        qty: item.quantity
+      }))
+    };
+    dispatch(createOrder(orderPayload));
+    dispatch(clearCart());
+    navigate("/");
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
     if (cartItems.length === 0) {
@@ -48,18 +73,14 @@ export default function Checkout() {
       setShowQR(true);
     } else {
       alert("✅ Order placed successfully!");
-      dispatch(addOrder({ items: cartItems, total, shipping, subtotal, paymentDetails: formData }));
-      dispatch(clearCart());
-      navigate("/");
+      processOrder();
     }
   };
 
   const handlePaymentDone = () => {
     alert("✅ Payment Verified & Order placed successfully!");
     setShowQR(false);
-    dispatch(addOrder({ items: cartItems, total, shipping, subtotal, paymentDetails: formData }));
-    dispatch(clearCart());
-    navigate("/");
+    processOrder();
   };
 
   const upiId = "9694735281@paytm"; 

@@ -2,7 +2,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   sendContactMessage,
   resetContactState,
-} from "../feactures/contact/contactSlice"; // ✅ FIXED PATH
+} from "../../feactures/contact/contactSlice"; // ✅ FIXED PATH
 import { MapPin, Phone, Mail, Clock, Send } from "lucide-react";
 
 export default function Contact() {

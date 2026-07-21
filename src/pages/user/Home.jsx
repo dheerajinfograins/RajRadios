@@ -2,7 +2,8 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router";
 import { ArrowRight, Wrench } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../feactures/product/productSlice";
+import { fetchProducts } from "../../feactures/product/productSlice";
+import { SERVER_URL } from "../../utils/axiosInstance";
 
 export default function Home() {
   const dispatch = useDispatch();
@@ -17,7 +18,7 @@ export default function Home() {
   const latestImages = products
     .filter(p => p.images && p.images.length > 0)
     .slice(0, 5) // Take top 5 latest products with images
-    .map(p => `http://localhost:5000${p.images[0]}`);
+    .map(p => `${SERVER_URL}${p.images[0]}`);
 
   // Fallback image if no products exist
   const sliderImages = latestImages.length > 0 ? latestImages : ["images/Speaker1.jpg"];
@@ -73,7 +74,7 @@ export default function Home() {
             
             {sliderImages.map((imgSrc, index) => (
               <img
-                key={index}
+                key={imgSrc}
                 src={imgSrc}
                 alt={`Hero Slide ${index + 1}`}
                 className={`absolute inset-0 w-full h-full object-cover transform transition-all duration-1000 ease-in-out z-10 ${
@@ -85,9 +86,9 @@ export default function Home() {
             {/* Slider Indicators */}
             {sliderImages.length > 1 && (
               <div className="absolute bottom-4 left-0 right-0 z-20 flex justify-center gap-2">
-                {sliderImages.map((_, idx) => (
+                {sliderImages.map((imgSrc, idx) => (
                   <button
-                    key={idx}
+                    key={imgSrc}
                     onClick={() => setCurrentSlide(idx)}
                     className={`w-2 h-2 rounded-full transition-all duration-300 ${
                       idx === currentSlide ? 'bg-cyan-500 w-4' : 'bg-gray-400/50 hover:bg-gray-400'

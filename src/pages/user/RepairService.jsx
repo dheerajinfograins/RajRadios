@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   createRepair,
   resetRepairState,
-} from "../feactures/repair/repairServiceSlice.js";
+} from "../../feactures/repair/repairServiceSlice.js";
 import { useNavigate } from "react-router";
 import { Radio, Speaker, AudioLines, Bluetooth, Home, Clock, Wrench } from "lucide-react"; 
 

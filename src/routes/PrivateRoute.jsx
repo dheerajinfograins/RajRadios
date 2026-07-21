@@ -1,7 +1,7 @@
 import { Navigate, Outlet } from "react-router";
 import { useSelector } from "react-redux";
-import Header from "../components/Header";
-import Footer from "../components/Footer";
+import Header from "../components/user/Header";
+import Footer from "../components/user/Footer";
 
 const ProtectedRoute = () => {
   // ✅ Get auth state from redux

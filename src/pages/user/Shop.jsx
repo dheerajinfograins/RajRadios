@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 import { ShoppingCart, Heart, X, ChevronRight, ChevronLeft } from "lucide-react";
 import { useDispatch, useSelector } from "react-redux";
-import { addToCart } from "../feactures/cart/cartSlice";
-import { toggleWishlist } from "../feactures/wishlist/wishlistSlice";
-import { fetchProducts } from "../feactures/product/productSlice";
+import { addToCart } from "../../feactures/cart/cartSlice";
+import { toggleWishlist } from "../../feactures/wishlist/wishlistSlice";
+import { fetchProducts } from "../../feactures/product/productSlice";
+import { SERVER_URL } from "../../utils/axiosInstance";
 
 export default function Shop() {
   const dispatch = useDispatch();
@@ -19,13 +20,13 @@ export default function Shop() {
   const handleAddToCart = (e, product) => {
     if (e) e.stopPropagation();
     // Ensure product has id field for cart slice compatibility
-    const cartProduct = { ...product, id: product._id, image: product.images && product.images[0] ? `http://localhost:5000${product.images[0]}` : "" };
+    const cartProduct = { ...product, id: product._id, image: product.images?.[0] ? `${SERVER_URL}${product.images[0]}` : "" };
     dispatch(addToCart(cartProduct));
   };
 
   const handleWishlist = (e, product) => {
     if (e) e.stopPropagation();
-    const wishProduct = { ...product, id: product._id, image: product.images && product.images[0] ? `http://localhost:5000${product.images[0]}` : "" };
+    const wishProduct = { ...product, id: product._id, image: product.images?.[0] ? `${SERVER_URL}${product.images[0]}` : "" };
     dispatch(toggleWishlist(wishProduct));
   };
 
@@ -52,7 +53,79 @@ export default function Shop() {
     }
   };
 
+  let renderedProducts;
 
+  if (loading) {
+    renderedProducts = (
+      <div className="flex justify-center items-center h-64">
+        <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    );
+  } else if (products.length === 0) {
+    renderedProducts = (
+      <div className="text-center text-gray-400 mt-20 text-xl">
+        No products available at the moment.
+      </div>
+    );
+  } else {
+    renderedProducts = (
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        {products.map((product) => (
+          <button
+            key={product._id}
+            onClick={() => openModal(product)}
+            className="text-left w-full group cursor-pointer bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 transform hover:-translate-y-2 flex flex-col"
+          >
+            {/* Image Section */}
+            <div className="relative aspect-square overflow-hidden bg-gray-900">
+              <img
+                src={product.images && product.images.length > 0 ? `${SERVER_URL}${product.images[0]}` : ""}
+                alt={product.name}
+                className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
+              />
+              {/* Wishlist Button */}
+              <button 
+                onClick={(e) => handleWishlist(e, product)}
+                className="absolute top-4 right-4 p-2.5 bg-gray-900/60 backdrop-blur-md rounded-full text-gray-300 hover:text-red-500 hover:bg-gray-900 border border-transparent hover:border-red-500/50 transition-all duration-300 z-10 shadow-lg"
+              >
+                <Heart className={`w-5 h-5 transition-colors ${isWishlisted(product._id) ? 'fill-red-500 text-red-500' : ''}`} />
+              </button>
+              {/* Stock Badge */}
+              {product.stock <= 0 && (
+                <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-lg">
+                  Out of Stock
+                </div>
+              )}
+            </div>
+
+            {/* Content Section */}
+            <div className="p-6 flex-grow flex flex-col justify-between">
+              <div>
+                <h2 className="text-xl font-bold mb-2 text-gray-100 group-hover:text-cyan-400 transition-colors">
+                  {product.name}
+                </h2>
+                <p className="text-sm text-gray-400 line-clamp-2 mb-4">{product.description}</p>
+              </div>
+              
+              <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-700/50">
+                <p className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-extrabold text-2xl">
+                  ₹{product.price}
+                </p>
+                <button
+                  onClick={(e) => handleAddToCart(e, product)}
+                  disabled={product.stock <= 0}
+                  className="p-3 bg-gray-900/80 border border-gray-700/50 rounded-full text-cyan-400 hover:bg-cyan-500 hover:text-black hover:border-cyan-500 shadow-lg transition-all duration-300 transform hover:scale-110 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
+                  title="Add to Cart"
+                >
+                  <ShoppingCart className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+          </button>
+        ))}
+      </div>
+    );
+  }
 
   return (
     <div className="bg-[#0a0f16] text-white min-h-screen font-sans selection:bg-cyan-500 selection:text-black overflow-hidden relative pt-36 pb-16 px-6 md:px-12 lg:px-20">
@@ -73,71 +146,7 @@ export default function Shop() {
 
       {/* Product Grid */}
       <div className="relative z-10 max-w-[1400px] mx-auto min-h-[50vh]">
-        {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="w-16 h-16 border-4 border-cyan-500 border-t-transparent rounded-full animate-spin"></div>
-          </div>
-        ) : products.length === 0 ? (
-          <div className="text-center text-gray-400 mt-20 text-xl">
-            No products available at the moment.
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {products.map((product) => (
-              <div
-                key={product._id}
-                onClick={() => openModal(product)}
-                className="group cursor-pointer bg-gray-800/40 backdrop-blur-sm border border-gray-700/50 rounded-3xl overflow-hidden shadow-lg hover:shadow-2xl hover:shadow-cyan-500/20 transition-all duration-500 transform hover:-translate-y-2 flex flex-col"
-              >
-                {/* Image Section */}
-                <div className="relative aspect-square overflow-hidden bg-gray-900">
-                  <img
-                    src={product.images && product.images.length > 0 ? `http://localhost:5000${product.images[0]}` : ""}
-                    alt={product.name}
-                    className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
-                  />
-                  {/* Wishlist Button */}
-                  <button 
-                    onClick={(e) => handleWishlist(e, product)}
-                    className="absolute top-4 right-4 p-2.5 bg-gray-900/60 backdrop-blur-md rounded-full text-gray-300 hover:text-red-500 hover:bg-gray-900 border border-transparent hover:border-red-500/50 transition-all duration-300 z-10 shadow-lg"
-                  >
-                    <Heart className={`w-5 h-5 transition-colors ${isWishlisted(product._id) ? 'fill-red-500 text-red-500' : ''}`} />
-                  </button>
-                  {/* Stock Badge */}
-                  {product.stock <= 0 && (
-                    <div className="absolute top-4 left-4 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10 shadow-lg">
-                      Out of Stock
-                    </div>
-                  )}
-                </div>
-
-                {/* Content Section */}
-                <div className="p-6 flex-grow flex flex-col justify-between">
-                  <div>
-                    <h2 className="text-xl font-bold mb-2 text-gray-100 group-hover:text-cyan-400 transition-colors">
-                      {product.name}
-                    </h2>
-                    <p className="text-sm text-gray-400 line-clamp-2 mb-4">{product.description}</p>
-                  </div>
-                  
-                  <div className="flex justify-between items-center mt-auto pt-4 border-t border-gray-700/50">
-                    <p className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 font-extrabold text-2xl">
-                      ₹{product.price}
-                    </p>
-                    <button
-                      onClick={(e) => handleAddToCart(e, product)}
-                      disabled={product.stock <= 0}
-                      className="p-3 bg-gray-900/80 border border-gray-700/50 rounded-full text-cyan-400 hover:bg-cyan-500 hover:text-black hover:border-cyan-500 shadow-lg transition-all duration-300 transform hover:scale-110 disabled:opacity-50 disabled:hover:scale-100 disabled:cursor-not-allowed"
-                      title="Add to Cart"
-                    >
-                      <ShoppingCart className="w-5 h-5" />
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
+        {renderedProducts}
       </div>
 
       {/* Product Details Modal */}
@@ -158,7 +167,7 @@ export default function Shop() {
               {selectedProduct.images && selectedProduct.images.length > 0 ? (
                 <>
                   <img 
-                    src={`http://localhost:5000${selectedProduct.images[currentImageIndex]}`} 
+                    src={`${SERVER_URL}${selectedProduct.images[currentImageIndex]}`} 
                     alt={selectedProduct.name} 
                     className="w-full h-full object-contain"
                   />
@@ -174,9 +183,9 @@ export default function Shop() {
                       
                       {/* Image indicators */}
                       <div className="absolute bottom-4 left-0 right-0 flex justify-center gap-2">
-                        {selectedProduct.images.map((_, idx) => (
+                        {selectedProduct.images.map((imgUrl, idx) => (
                           <div 
-                            key={idx} 
+                            key={imgUrl} 
                             className={`w-2 h-2 rounded-full ${idx === currentImageIndex ? 'bg-cyan-500' : 'bg-gray-500'}`}
                           ></div>
                         ))}
@@ -205,8 +214,8 @@ export default function Shop() {
                 
                 <div className="mb-6">
                   <h3 className="text-lg font-semibold text-gray-300 mb-2">Description</h3>
-                  <p className="text-gray-400 leading-relaxed max-h-48 overflow-y-auto pr-2 custom-scrollbar">
-                    {selectedProduct.description}
+                  <p className="text-gray-400 leading-relaxed max-h-48 overflow-y-auto pr-2 custom-scrollbar whitespace-pre-line">
+                    {selectedProduct.description ? selectedProduct.description.replace(/(Key Features)/gi, '\n\n$1:\n') : ''}
                   </p>
                 </div>
 

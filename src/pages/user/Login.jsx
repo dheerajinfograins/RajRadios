@@ -1,11 +1,11 @@
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router"; // ✅ already correct
 import { useDispatch, useSelector } from "react-redux";
-import { loginUser } from "../feactures/auth/authSlice.js";
+import { loginUser } from "../../feactures/auth/authSlice.js";
 
 // ✅ NEW IMPORTS
-// import axiosInstance from "../utils/axiosInstance.js";
-import { isAuthenticated } from "../utils/auth.utils";
+// import axiosInstance from "../../utils/axiosInstance.js";
+import { isAuthenticated } from "../../utils/auth.utils";
 
 // Login User Component
 export default function Login() {

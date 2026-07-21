@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerUser } from "../feactures/auth/authSlice";
+import { registerUser } from "../../feactures/auth/authSlice";
 import { Link } from "react-router";
 
 // Register User Component

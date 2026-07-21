@@ -3,9 +3,11 @@
 import axios from "axios";
 import { getAuthToken } from "../utils/auth.utils.js";
 
+export const SERVER_URL = "http://localhost:5000";
+
 // ✅ Create axios instance
 const axiosInstance = axios.create({
-  baseURL: "http://localhost:5000", // 🔁 change if needed
+  baseURL: `${SERVER_URL}/api`, // 🔁 change if needed
   headers: {
     "Content-Type": "application/json",
   },

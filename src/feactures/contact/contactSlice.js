@@ -1,14 +1,12 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
-
-
+import axiosInstance from "../../utils/axiosInstance";
 
 // ================= SEND CONTACT MESSAGE =================
 export const sendContactMessage = createAsyncThunk(
   "contact",
   async (formData, { rejectWithValue }) => {
     try {
-      const res = await axios.post(`http://localhost:5000/contactForm/contact`, formData);
+      const res = await axiosInstance.post(`/contactForm/contact`, formData);
       return res.data;
     } catch (error) {
       return rejectWithValue(
