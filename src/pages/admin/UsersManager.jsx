@@ -72,7 +72,7 @@ const UsersManager = () => {
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-lg flex-shrink-0">
               {user.photo ? (
-                <img src={`${SERVER_URL}${user.photo}`} alt={user.user_name} className="h-full w-full rounded-full object-cover" />
+                <img src={user.photo?.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt={user.user_name} className="h-full w-full rounded-full object-cover" />
               ) : (
                 user.user_name?.charAt(0).toUpperCase() || 'U'
               )}
@@ -172,7 +172,7 @@ const UsersManager = () => {
               <div className="flex items-start gap-6 mb-8">
                 <div className="h-24 w-24 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center font-bold text-3xl shadow-sm border-4 border-white flex-shrink-0">
                   {selectedUser.photo ? (
-                    <img src={`${SERVER_URL}${selectedUser.photo}`} alt={selectedUser.user_name} className="h-full w-full rounded-full object-cover" />
+                    <img src={selectedUser.photo?.startsWith('http') ? selectedUser.photo : `${SERVER_URL}${selectedUser.photo}`} alt={selectedUser.user_name} className="h-full w-full rounded-full object-cover" />
                   ) : (
                     selectedUser.user_name?.charAt(0).toUpperCase() || 'U'
                   )}

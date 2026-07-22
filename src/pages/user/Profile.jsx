@@ -106,7 +106,7 @@ export default function Profile() {
   if (photoLoading) {
     profileImageContent = <Loader2 className="animate-spin text-cyan-400 w-8 h-8" />;
   } else if (user?.photo) {
-    profileImageContent = <img src={`${SERVER_URL}${user.photo}`} alt="Profile" className="w-full h-full object-cover" />;
+    profileImageContent = <img src={user.photo?.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt="Profile" className="w-full h-full object-cover" />;
   } else {
     profileImageContent = <span className="text-4xl font-bold text-cyan-400">{user?.user_name?.charAt(0).toUpperCase() || 'U'}</span>;
   }

@@ -204,7 +204,7 @@ const AdminProfileModal = ({ onClose }) => {
               <div className="flex-1 flex flex-col items-center justify-center">
                 <div className="w-32 h-32 rounded-full border-4 border-gray-100 shadow-sm overflow-hidden mb-6 bg-orange-50 flex items-center justify-center relative group">
                   {user?.photo ? (
-                    <img src={`${SERVER_URL}${user.photo}`} alt="Profile" className="w-full h-full object-cover" />
+                    <img src={user.photo?.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt="Profile" className="w-full h-full object-cover" />
                   ) : (
                     <span className="text-4xl font-bold text-orange-400">{user?.user_name?.charAt(0).toUpperCase()}</span>
                   )}

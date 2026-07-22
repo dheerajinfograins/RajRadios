@@ -1,11 +1,20 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router';
 import { CheckCircle, Truck, Package, Clock } from 'lucide-react';
+import { fetchMyOrders } from '../../feactures/order/orderSlice';
+import { SERVER_URL } from '../../utils/axiosInstance';
 
 export default function TrackOrder() {
   const { orders } = useSelector((state) => state.order);
   const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(fetchMyOrders(user._id));
+    }
+  }, [dispatch, user]);
 
   const customerName = user?.user_name || user?.name || 'Customer';
 
@@ -55,19 +64,19 @@ export default function TrackOrder() {
         ) : (
           <div className="space-y-8">
             {orders.map((order) => {
-              const currentStep = getOrderStatus(order.date);
+              const currentStep = getOrderStatus(order.createdAt);
               
               return (
-                <div key={order.id} className="bg-gray-800/40 backdrop-blur-sm p-6 md:p-10 rounded-3xl border border-gray-700/50 shadow-xl">
+                <div key={order._id} className="bg-gray-800/40 backdrop-blur-sm p-6 md:p-10 rounded-3xl border border-gray-700/50 shadow-xl">
                   
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 border-b border-gray-700/50 pb-6">
                     <div>
                       <p className="text-sm text-gray-400 mb-1">Tracking ID</p>
-                      <p className="text-xl font-mono text-cyan-400 font-bold bg-cyan-500/10 px-3 py-1 rounded inline-block border border-cyan-500/20">{order.id}</p>
+                      <p className="text-xl font-mono text-cyan-400 font-bold bg-cyan-500/10 px-3 py-1 rounded inline-block border border-cyan-500/20">{order._id}</p>
                     </div>
                     <div className="mt-4 md:mt-0 text-left md:text-right">
                       <p className="text-sm text-gray-400 mb-1">Expected Delivery</p>
-                      <p className="text-lg font-bold text-green-400">{getEstimatedDelivery(order.date)}</p>
+                      <p className="text-lg font-bold text-green-400">{getEstimatedDelivery(order.createdAt)}</p>
                     </div>
                   </div>
 
@@ -115,17 +124,27 @@ export default function TrackOrder() {
                   <div className="mt-10 pt-6 border-t border-gray-700/50">
                     <h4 className="text-gray-300 font-medium mb-4">Items in this shipment</h4>
                     <div className="flex flex-wrap gap-4">
-                      {order.items.map((item) => (
-                        <div key={item.id} className="flex items-center gap-3 bg-gray-900/60 p-3 rounded-xl border border-gray-700/50 flex-grow max-w-[280px]">
+                      {order.items.map((item) => {
+                        const itemImage = item.image || item.productId?.images?.[0];
+                        return (
+                        <div key={item._id} className="flex items-center gap-3 bg-gray-900/60 p-3 rounded-xl border border-gray-700/50 flex-grow max-w-[280px]">
                           <div className="bg-white rounded-lg p-1 w-12 h-12 flex-shrink-0">
-                            <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                            {itemImage ? (
+                              <img 
+                                src={itemImage.startsWith('http') ? itemImage : `${SERVER_URL}${itemImage}`} 
+                                alt={item.name} 
+                                className="w-full h-full object-contain" 
+                              />
+                            ) : (
+                              <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-[10px] text-center rounded-md">No Image</div>
+                            )}
                           </div>
                           <div>
                             <p className="text-sm font-semibold text-gray-200 line-clamp-1" title={item.name}>{item.name}</p>
-                            <p className="text-xs text-cyan-400">Qty: {item.quantity}</p>
+                            <p className="text-xs text-cyan-400">Qty: {item.qty}</p>
                           </div>
                         </div>
-                      ))}
+                      )})}
                     </div>
                   </div>
 

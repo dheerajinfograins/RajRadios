@@ -6,6 +6,11 @@ import { toggleWishlist } from "../../feactures/wishlist/wishlistSlice";
 import { fetchProducts } from "../../feactures/product/productSlice";
 import { SERVER_URL } from "../../utils/axiosInstance";
 
+const getImageUrl = (imagePath) => {
+  if (!imagePath) return "";
+  return imagePath.startsWith('http') ? imagePath : `${SERVER_URL}${imagePath}`;
+};
+
 export default function Shop() {
   const dispatch = useDispatch();
   const { wishlistItems } = useSelector((state) => state.wishlist);
@@ -19,14 +24,20 @@ export default function Shop() {
   }, [dispatch]);
   const handleAddToCart = (e, product) => {
     if (e) e.stopPropagation();
+    
+    const image = getImageUrl(product.images?.[0]);
+
     // Ensure product has id field for cart slice compatibility
-    const cartProduct = { ...product, id: product._id, image: product.images?.[0] ? `${SERVER_URL}${product.images[0]}` : "" };
+    const cartProduct = { ...product, id: product._id, image };
     dispatch(addToCart(cartProduct));
   };
 
   const handleWishlist = (e, product) => {
     if (e) e.stopPropagation();
-    const wishProduct = { ...product, id: product._id, image: product.images?.[0] ? `${SERVER_URL}${product.images[0]}` : "" };
+    
+    const image = getImageUrl(product.images?.[0]);
+
+    const wishProduct = { ...product, id: product._id, image };
     dispatch(toggleWishlist(wishProduct));
   };
 
@@ -79,7 +90,7 @@ export default function Shop() {
             {/* Image Section */}
             <div className="relative aspect-square overflow-hidden bg-gray-900">
               <img
-                src={product.images && product.images.length > 0 ? `${SERVER_URL}${product.images[0]}` : ""}
+                src={getImageUrl(product.images?.[0])}
                 alt={product.name}
                 className="w-full h-full object-cover transform transition-transform duration-700 group-hover:scale-110"
               />
@@ -167,7 +178,7 @@ export default function Shop() {
               {selectedProduct.images && selectedProduct.images.length > 0 ? (
                 <>
                   <img 
-                    src={`${SERVER_URL}${selectedProduct.images[currentImageIndex]}`} 
+                    src={getImageUrl(selectedProduct.images[currentImageIndex])} 
                     alt={selectedProduct.name} 
                     className="w-full h-full object-contain"
                   />

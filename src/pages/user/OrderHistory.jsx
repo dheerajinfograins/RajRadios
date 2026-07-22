@@ -1,6 +1,8 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { NavLink } from 'react-router';
+import { fetchMyOrders } from '../../feactures/order/orderSlice';
+import { SERVER_URL } from '../../utils/axiosInstance';
 
 const getPaymentMethod = (payment) => {
   if (payment === 'upi') return 'UPI';
@@ -10,6 +12,14 @@ const getPaymentMethod = (payment) => {
 
 export default function OrderHistory() {
   const { orders } = useSelector((state) => state.order);
+  const { user } = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (user?._id) {
+      dispatch(fetchMyOrders(user._id));
+    }
+  }, [dispatch, user]);
 
   return (
     <div className="min-h-screen bg-[#0a0f16] text-white pt-36 pb-16 px-6 md:px-12 lg:px-20 relative">
@@ -32,37 +42,47 @@ export default function OrderHistory() {
         ) : (
           <div className="space-y-8">
             {orders.map((order) => (
-              <div key={order.id} className="bg-gray-800/40 backdrop-blur-sm p-6 md:p-8 rounded-3xl border border-gray-700/50 shadow-xl">
+              <div key={order._id} className="bg-gray-800/40 backdrop-blur-sm p-6 md:p-8 rounded-3xl border border-gray-700/50 shadow-xl">
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 border-b border-gray-700/50 pb-6">
                   <div>
                     <p className="text-sm text-gray-400 mb-1">
-                      Order ID: <span className="font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">{order.id}</span>
+                      Order ID: <span className="font-mono text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded">{order._id}</span>
                     </p>
                     <p className="text-sm text-gray-400">
-                      Placed on: {new Date(order.date).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                      Placed on: {new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
                   <div className="mt-4 md:mt-0 text-left md:text-right">
                     <p className="text-xl font-bold text-white mb-1">Total: <span className="text-cyan-400">₹{order.total}</span></p>
                     <p className="text-xs text-green-400 font-semibold bg-green-500/10 px-3 py-1 rounded-full inline-block border border-green-500/20 uppercase tracking-wide">
-                      Paid via {getPaymentMethod(order.paymentDetails?.payment)}
+                      Paid via {getPaymentMethod(order.payment)}
                     </p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
-                  {order.items.map((item) => (
-                    <div key={item.id} className="flex items-center gap-4 bg-gray-900/50 p-4 rounded-2xl border border-gray-700/30">
+                  {order.items.map((item) => {
+                    const itemImage = item.image || item.productId?.images?.[0];
+                    return (
+                    <div key={item._id} className="flex items-center gap-4 bg-gray-900/50 p-4 rounded-2xl border border-gray-700/30">
                       <div className="w-20 h-20 rounded-xl overflow-hidden border border-gray-600/30 bg-white">
-                        <img src={item.image} alt={item.name} className="w-full h-full object-contain p-2" />
+                        {itemImage ? (
+                          <img 
+                            src={itemImage.startsWith('http') ? itemImage : `${SERVER_URL}${itemImage}`} 
+                            alt={item.name} 
+                            className="w-full h-full object-contain p-2" 
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center bg-gray-200 text-gray-400 text-xs text-center p-1">No Image</div>
+                        )}
                       </div>
                       <div className="flex-grow">
                         <p className="font-semibold text-gray-100 text-lg">{item.name}</p>
-                        <p className="text-sm text-gray-400 mt-1">Qty: {item.quantity} × <span className="text-cyan-400 font-medium">₹{item.price}</span></p>
+                        <p className="text-sm text-gray-400 mt-1">Qty: {item.qty} × <span className="text-cyan-400 font-medium">₹{item.price}</span></p>
                       </div>
-                      <p className="font-bold text-white text-lg">₹{item.price * item.quantity}</p>
+                      <p className="font-bold text-white text-lg">₹{item.price * item.qty}</p>
                     </div>
-                  ))}
+                  )})}
                 </div>
                 
                 <div className="mt-6 pt-4 border-t border-gray-700/50 flex justify-end">

@@ -5,6 +5,7 @@ import { LogOut, User, Menu } from "lucide-react";
 import { logout } from "../../feactures/auth/authSlice";
 import AdminProfileModal from "./AdminProfileModal";
 import { SERVER_URL } from "../../utils/axiosInstance";
+import NotificationBell from "./NotificationBell";
 
 const AdminLayout = ({ children }) => {
   const { user } = useSelector((state) => state.auth);
@@ -46,8 +47,10 @@ const AdminLayout = ({ children }) => {
             </button>
             <h1 className="text-xl font-semibold text-gray-800">Dashboard</h1>
           </div>
-          <div className="relative" ref={dropdownRef}>
-            <button 
+          <div className="flex items-center gap-4">
+            <NotificationBell />
+            <div className="relative" ref={dropdownRef}>
+              <button 
               className="flex items-center gap-2 sm:gap-4 focus:outline-none"
               onClick={() => setDropdownOpen(!dropdownOpen)}
             >
@@ -55,7 +58,7 @@ const AdminLayout = ({ children }) => {
                 Welcome, <span className="font-semibold text-gray-900">{user?.user_name || "Admin"}</span>
               </span>
               {user?.photo ? (
-                <img src={`${SERVER_URL}${user.photo}`} alt="Profile" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border border-gray-200" />
+                <img src={user.photo?.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt="Profile" className="w-8 h-8 sm:w-10 sm:h-10 rounded-full object-cover border border-gray-200" />
               ) : (
                 <div className="w-8 h-8 sm:w-10 sm:h-10 bg-orange-100 rounded-full flex items-center justify-center text-orange-600 font-bold text-sm sm:text-base">
                   {user?.user_name?.charAt(0).toUpperCase() || "A"}
@@ -80,6 +83,7 @@ const AdminLayout = ({ children }) => {
                 </button>
               </div>
             )}
+            </div>
           </div>
         </header>
 

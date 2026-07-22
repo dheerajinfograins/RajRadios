@@ -232,7 +232,7 @@ const OrdersManager = () => {
                   <div key={item._id || item.productId?._id || idx} className="flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                     <div className="h-20 w-20 bg-gray-50 rounded-lg overflow-hidden flex-shrink-0 flex items-center justify-center border border-gray-100 p-1">
                       {item.productId?.images && item.productId.images.length > 0 ? (
-                        <img src={`${SERVER_URL}${item.productId.images[0]}`} alt={item.name} className="h-full w-full object-contain mix-blend-multiply" />
+                        <img src={item.productId?.images?.[0]?.startsWith('http') ? item.productId.images[0] : `${SERVER_URL}${item.productId?.images?.[0] || ''}`} alt={item.name} className="h-full w-full object-contain mix-blend-multiply" />
                       ) : (
                         <Package size={32} className="text-gray-300" />
                       )}

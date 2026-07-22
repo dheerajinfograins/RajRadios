@@ -18,7 +18,7 @@ export default function Home() {
   const latestImages = products
     .filter(p => p.images && p.images.length > 0)
     .slice(0, 5) // Take top 5 latest products with images
-    .map(p => `${SERVER_URL}${p.images[0]}`);
+    .map(p => p.images[0]?.startsWith('http') ? p.images[0] : `${SERVER_URL}${p.images[0]}`);
 
   // Fallback image if no products exist
   const sliderImages = latestImages.length > 0 ? latestImages : ["images/Speaker1.jpg"];

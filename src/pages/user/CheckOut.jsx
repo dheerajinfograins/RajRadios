@@ -7,6 +7,7 @@ import { QrCode, CheckCircle } from "lucide-react";
 
 export default function Checkout() {
   const { cartItems } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -54,9 +55,15 @@ export default function Checkout() {
         productId: item._id || item.id,
         name: item.name,
         price: item.price,
-        qty: item.quantity
+        qty: item.quantity,
+        image: item.image || item.images?.[0] || ""
       }))
     };
+    
+    if (user?._id) {
+      orderPayload.userId = user._id;
+    }
+
     dispatch(createOrder(orderPayload));
     dispatch(clearCart());
     navigate("/");

@@ -5,6 +5,7 @@ import { useSelector, useDispatch } from "react-redux";
 import { logout } from "../../feactures/auth/authSlice";
 import { SERVER_URL } from "../../utils/axiosInstance";
 import logoImg from "../../assets/logo/logo.png";
+import NotificationBell from "../admin/NotificationBell";
 
 export default function Header() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -66,13 +67,15 @@ export default function Header() {
           {/* Desktop Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             {isAuthorized ? (
-              <div className="relative">
-                <button
-                  className="flex items-center gap-2 text-cyan-400 font-semibold cursor-pointer p-2 rounded-lg hover:bg-gray-800/50 transition"
-                  onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
-                >
+              <div className="flex items-center gap-4">
+                <NotificationBell colorClass="text-cyan-400 hover:text-white" />
+                <div className="relative">
+                  <button
+                    className="flex items-center gap-2 text-cyan-400 font-semibold cursor-pointer p-2 rounded-lg hover:bg-gray-800/50 transition"
+                    onClick={() => setProfileDropdownOpen(!profileDropdownOpen)}
+                  >
                   {user?.photo ? (
-                    <img src={`${SERVER_URL}${user.photo}`} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-cyan-500/30" />
+                    <img src={user.photo?.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt="Profile" className="w-8 h-8 rounded-full object-cover border border-cyan-500/30" />
                   ) : (
                     <User className="w-6 h-6" />
                   )}
@@ -108,6 +111,7 @@ export default function Header() {
                     </div>
                   </div>
                 )}
+              </div>
               </div>
             ) : (
               <>
@@ -167,13 +171,16 @@ export default function Header() {
             {isAuthorized ? (
               <>
                 <div className="flex flex-col gap-2 px-4 py-3 border-b border-gray-700">
-                  <div className="flex items-center gap-2 text-cyan-400 font-semibold mb-2">
-                    {user?.photo ? (
-                      <img src={`${SERVER_URL}${user.photo}`} alt="Profile" className="w-7 h-7 rounded-full object-cover border border-cyan-500/30" />
-                    ) : (
-                      <User className="w-5 h-5" />
-                    )}
-                    <span>Hi, {user?.user_name || user?.name || "User"}</span>
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center gap-2 text-cyan-400 font-semibold">
+                      {user?.photo ? (
+                        <img src={user.photo?.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt="Profile" className="w-7 h-7 rounded-full object-cover border border-cyan-500/30" />
+                      ) : (
+                        <User className="w-5 h-5" />
+                      )}
+                      <span>Hi, {user?.user_name || user?.name || "User"}</span>
+                    </div>
+                    <NotificationBell colorClass="text-cyan-400 hover:text-white" />
                   </div>
                   <NavLink to="/profile" onClick={() => setMobileOpen(false)} className="block text-white hover:text-cyan-400 py-2">Profile</NavLink>
                   <NavLink to="/orders" onClick={() => setMobileOpen(false)} className="block text-white hover:text-cyan-400 py-2">Order History</NavLink>

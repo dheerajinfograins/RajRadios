@@ -16,6 +16,19 @@ export const fetchAdminOrders = createAsyncThunk(
   }
 );
 
+// Fetch orders for customer
+export const fetchMyOrders = createAsyncThunk(
+  "order/fetchMyOrders",
+  async (userId, thunkAPI) => {
+    try {
+      const response = await axiosInstance.get(`${API_URL}/my-orders/${userId}`);
+      return response.data.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response?.data?.message || error.message);
+    }
+  }
+);
+
 // Create order
 export const createOrder = createAsyncThunk(
   "order/createOrder",
@@ -83,6 +96,18 @@ const orderSlice = createSlice({
         state.orders = action.payload;
       })
       .addCase(fetchAdminOrders.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload;
+      })
+      // Fetch My Orders (Customer)
+      .addCase(fetchMyOrders.pending, (state) => {
+        state.loading = true;
+      })
+      .addCase(fetchMyOrders.fulfilled, (state, action) => {
+        state.loading = false;
+        state.orders = action.payload;
+      })
+      .addCase(fetchMyOrders.rejected, (state, action) => {
         state.loading = false;
         state.error = action.payload;
       })

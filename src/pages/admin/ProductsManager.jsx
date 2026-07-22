@@ -160,7 +160,7 @@ const ProductsManager = () => {
         <td className="p-4 flex items-center gap-3">
           <div className="h-12 w-12 bg-gray-100 rounded-md overflow-hidden flex-shrink-0 flex items-center justify-center">
             {product.images && product.images.length > 0 ? (
-              <img src={`${SERVER_URL}${product.images[0]}`} alt={product.name} className="h-full w-full object-cover" />
+              <img src={product.images[0]?.startsWith('http') ? product.images[0] : `${SERVER_URL}${product.images[0]}`} alt={product.name} className="h-full w-full object-cover" />
             ) : (
               <ImageIcon className="text-gray-400" />
             )}
