@@ -3,7 +3,7 @@
 import axios from "axios";
 import { getAuthToken } from "../utils/auth.utils.js";
 
-export const SERVER_URL = "http://localhost:5000";
+export const SERVER_URL = "https://backendofvijayradios.onrender.com";
 
 // ✅ Create axios instance
 const axiosInstance = axios.create({
