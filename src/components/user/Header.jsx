@@ -29,8 +29,7 @@ export default function Header() {
   ];
 
   return (
-    <>
-      <header className="bg-black/30 backdrop-blur-md text-white shadow-lg fixed w-full top-0 left-0 z-50">
+    <header className="bg-black/30 backdrop-blur-md text-white shadow-lg fixed w-full top-0 left-0 z-50">
         <div className="container mx-auto flex justify-between items-center px-6 py-2">
 
           {/* Logo */}
@@ -132,22 +131,45 @@ export default function Header() {
             )}
           </div>
 
-          {/* Mobile Menu Icon */}
-          <button
-            className="md:hidden text-cyan-400 cursor-pointer text-3xl focus:outline-none"
-            onClick={() => setMobileOpen(!mobileOpen)}
-          >
-            {mobileOpen ? "✖" : "☰"}
-          </button>
-        </div>
-      </header>
+          {/* Mobile Header Icons & Menu Icon */}
+          <div className="flex md:hidden items-center space-x-3">
+            <NavLink to="/wishlist" className="relative text-cyan-400 hover:text-white transition">
+              <Heart className="w-6 h-6" />
+              {wishlistCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-cyan-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {wishlistCount}
+                </span>
+              )}
+            </NavLink>
 
-      {/* ================= MOBILE MENU ================= */}
-      {mobileOpen && (
-        <div className="md:hidden bg-gray-900 text-white px-6 py-4 space-y-4 shadow-lg">
+            <NavLink to="/card" className="relative text-cyan-400 hover:text-white transition">
+              <ShoppingCart className="w-6 h-6" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2 -right-2 bg-cyan-500 text-black text-[10px] font-bold px-1.5 py-0.5 rounded-full">
+                  {cartCount}
+                </span>
+              )}
+            </NavLink>
+
+            {isAuthorized && <NotificationBell colorClass="text-cyan-400 hover:text-white" />}
+
+            <button
+              className="text-cyan-400 cursor-pointer text-3xl focus:outline-none ml-1"
+              onClick={() => setMobileOpen(!mobileOpen)}
+            >
+              {mobileOpen ? "✖" : "☰"}
+            </button>
+          </div>
+        </div>
+
+        {/* ================= MOBILE MENU ================= */}
+        {mobileOpen && (
+          <div className="md:hidden bg-gray-900 text-white px-6 pt-4 pb-20 space-y-4 shadow-lg max-h-[calc(100vh-80px)] overflow-y-auto">
 
           {/* Mobile Nav Links */}
-          {links.map((link) => (
+          {links
+            .filter((link) => link.name !== "Cart" && link.name !== "Wishlist")
+            .map((link) => (
             <NavLink
               key={link.name}
               to={link.path}
@@ -171,7 +193,7 @@ export default function Header() {
             {isAuthorized ? (
               <>
                 <div className="flex flex-col gap-2 px-4 py-3 border-b border-gray-700">
-                  <div className="flex items-center justify-between mb-2">
+                  <div className="flex items-center mb-2">
                     <div className="flex items-center gap-2 text-cyan-400 font-semibold">
                       {user?.photo ? (
                         <img src={user.photo?.startsWith('http') ? user.photo : `${SERVER_URL}${user.photo}`} alt="Profile" className="w-7 h-7 rounded-full object-cover border border-cyan-500/30" />
@@ -180,7 +202,6 @@ export default function Header() {
                       )}
                       <span>Hi, {user?.user_name || user?.name || "User"}</span>
                     </div>
-                    <NotificationBell colorClass="text-cyan-400 hover:text-white" />
                   </div>
                   <NavLink to="/profile" onClick={() => setMobileOpen(false)} className="block text-white hover:text-cyan-400 py-2">Profile</NavLink>
                   <NavLink to="/orders" onClick={() => setMobileOpen(false)} className="block text-white hover:text-cyan-400 py-2">Order History</NavLink>
@@ -218,8 +239,8 @@ export default function Header() {
             )}
           </div>
 
-        </div>
-      )}
-    </>
+          </div>
+        )}
+    </header>
   );
 }
